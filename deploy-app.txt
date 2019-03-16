@@ -1,0 +1,119 @@
+Deploy a MEAN application:-
+
+---Launching EC2 instance
+
+1. Create a key pair (.pem file)
+
+2. Go to Amazon MarketPlace and use Bitnami MEAN image
+
+---Connecting to EC2 instance---
+
+3. Go to Instance Settings -> Get System Log -> Save the automatically generated password
+
+4. Convert your .pem file to .ppk (putty private key) file
+
+5. Use Putty to connect to EC2
+ - Use EC2 instance's ip address
+ - Set port to 22
+ - Under Connection -> SSH -> Auth, load your .ppk file
+ - Click Open
+ - Login as bitnami
+
+---Deploy application---
+
+6. Clone your git repository into apps folder
+ - cd apps
+ - git clone <url>
+ - cd <repository-name>
+ - npm install
+ - node index.js
+ - Open your browser to http://<ec2-ip-address>:<port-number>
+ - npm install forever -g
+ - forever start index.js
+
+---Logging into MongoDB---
+
+7. mongo admin --username root --password <password-from-3rd-step>
+
+8. Create a new user
+> show dbs 
+> use admin 
+> db.createUser 
+> db.createUser(
+    {
+      user: "YOUR USERNAME",
+      pwd: "YOUR PASSWORD",
+      roles: [ "root" ]
+    }
+)
+
+ - mongo admin --username <username> --password <password>
+
+9. Check the privileges of new user
+> show dbs 
+> use testDB 
+> db.test.insert({ item: "This is a test"})
+> db.test.find()
+
+---Enabling access to MongoDB---
+
+10. Open 27017 port on EC2 instance
+
+11. Inside stack folder -> MongoDB -> open mongodb.conf
+ - Change bind_ip to 0.0.0.0
+ - Save and execute ctlscript.sh from Stack folder
+ - bash ctlscript.sh restart mongodb
+
+---Necessary steps for local terminal---
+
+12. mongo <ec2-url>/admin -u <username> -p <password>
+ - Open mongodb.conf again in putty
+ - Uncomment 'noauth', comment 'auth'
+ - Restart mongo
+
+13. Revert the authentication mechanism
+> use admin
+> var schema = db.system.version.findOne({"_id": "authSchema"}) 
+> schema.currentVersion = 5
+> db.system.version.save(schema)
+
+14. Create a user with restricted access
+> show dbs 
+> use dummyDB
+> db.createUser({
+        user: "NEW USERNAME",
+        pwd: "NEW PASSWORD",
+        roles:[
+                {
+                        "role" : "readWrite",
+                        "db": "testDB"
+                }
+        ]
+})
+
+15. Open mongodb.conf again and uncomment 'auth' and restart mongo
+
+16. Open cmd and type -> mongo <EC2-url>/testDB -u <new-username> -p <new-password>
+
+17. Change mongo url in config
+ - mongodb://{NEW USERNAME}:{NEW PASSWORD}@{EC2 URL}:{PORT}/dummyDB
+
+18. Test application and configure S3
+> use dummyDB
+> show collections
+> db.todos.find().pretty()
+
+19. Upload and download code
+ - git commit -m "Configured new mongo url
+ - git push
+ - git pull
+
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <MaxAgeSeconds>3000</MaxAgeSeconds>
+</CORSRule>
+</CORSConfiguration>
+
