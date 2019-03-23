@@ -5,7 +5,7 @@ const app=express();
 
 console.log('req is here');
 
-const port=process.env.PORT||1234;
+const port=process.env.PORT||80;
 app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'public')));
