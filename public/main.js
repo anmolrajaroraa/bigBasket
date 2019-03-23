@@ -782,9 +782,9 @@ var subproductInfo = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "url", function() { return url; });
 var url = {
-    Imageuri: "http://ec2-13-232-195-32.ap-south-1.compute.amazonaws.com/employee/upload",
-    Registeruri: "http://ec2-13-232-195-32.ap-south-1.compute.amazonaws.com/employee/register",
-    Exceluri: "http://ec2-13-232-195-32.ap-south-1.compute.amazonaws.com/product/upload",
+    Imageuri: "http://ec2-13-127-223-100.ap-south-1.compute.amazonaws.com:1234/employee/upload",
+    Registeruri: "http://ec2-13-127-223-100.ap-south-1.compute.amazonaws.com:1234/employee/register",
+    Exceluri: "http://ec2-13-127-223-100.ap-south-1.compute.amazonaws.com:1234/product/upload",
     localImageuri: "http://192.168.1.66:1234/adminProducts/imageUpload",
     localRegisteruri: "http://192.168.1.66:1234/employee/register",
     localExceluri: "http://192.168.1.66:1234/adminProducts/upload",
